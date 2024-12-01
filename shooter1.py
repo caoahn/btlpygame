@@ -6,9 +6,9 @@ import random
 import csv
 import button
 mixer.init()
+
+
 pygame.init()
-
-
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = int(SCREEN_WIDTH * 0.8)
 
@@ -26,10 +26,10 @@ ROWS = 16
 COLS = 150
 TILE_SIZE = SCREEN_HEIGHT // ROWS
 TILE_TYPES = 21
-MAX_LEVELS = 1
+MAX_LEVELS = 5
 screen_scroll = 0
 bg_scroll = 0
-level = 2
+level = 1
 start_game = False
 start_intro = False
 
@@ -40,7 +40,6 @@ moving_right = False
 shoot = False
 grenade = False
 grenade_thrown = False
-
 
 #load music and sounds
 #pygame.mixer.music.load('audio/music2.mp3')
@@ -146,31 +145,30 @@ def reset_level():
 
 class Soldier(pygame.sprite.Sprite):
 	def __init__(self, char_type, x, y, scale, speed, ammo, grenades):
-		pygame.sprite.Sprite.__init__(self)
-		self.alive = True
-		self.char_type = char_type
-		self.speed = speed
-		self.ammo = ammo
-		self.start_ammo = ammo
-		self.shoot_cooldown = 0
-		self.grenades = grenades
-		self.health = 100
-		self.max_health = self.health
-		self.direction = 1
-		self.vel_y = 0
-		self.jump = False
-		self.in_air = True
-		self.flip = False
-		self.animation_list = []
-		self.frame_index = 0
-		self.action = 0
-		self.update_time = pygame.time.get_ticks()
+		pygame.sprite.Sprite.__init__(self)           
+		self.alive = True        # Kiểm tra lính còn sống hay không
+		self.char_type = char_type  # Check loại nhân vật
+		self.speed = speed       # Tốc Độ
+		self.ammo = ammo       # Số lượng đạn
+		self.start_ammo = ammo  # Số đạn ban đầu
+		self.shoot_cooldown = 0  # Thời gian hồi chiêu khi bắn
+		self.grenades = grenades  # Lựu đạn
+		self.health = 100         #  Lượng máu của nhân vật
+		self.max_health = self.health  # Lượng hồi phục tối đa của nhân vật
+		self.direction = 1       # # Hướng di chuyển ( 1: Phải, -1: Trái)
+		self.vel_y = 0     # Tốc độ rơi
+		self.jump = False  # Check nhân vật có đang nhảy hay không
+		self.in_air = True  # Check nhân vật có đang ở trên không khí hay không
+		self.flip = False    # Check nhân vật có bị lật ảnh hay không
+		self.animation_list = []  # List các animation của nhân vật
+		self.frame_index = 0   # chỉ số mỗi frame của nhân vật
+		self.action = 0       # Loại hành động hiện tại của nhân vật (run, idle, jump, death)
+		self.update_time = pygame.time.get_ticks()  # Thời gian hiện tại, giúp quản lí thời gian của nhân vật
 		#ai specific variables
-		self.move_counter = 0
-		self.vision = pygame.Rect(0, 0, 150, 20)
-		self.idling = False
-		self.idling_counter = 0
-		
+		self.move_counter = 0  # Đếm số lần di chuyển
+		self.vision = pygame.Rect(0, 0, 150, 20) # Phạm vi tầm nhìn của nhân vật
+		self.idling = False   # Check nhân vật đang đứng im
+		self.idling_counter = 0   # Đếm số lượng khung hình nhân vật đứng im
 		#load all images for the players
 		animation_types = ['Idle', 'Run', 'Jump', 'Death']
 		for animation in animation_types:
@@ -373,7 +371,6 @@ class Soldier(pygame.sprite.Sprite):
 class World():
 	def __init__(self):
 		self.obstacle_list = []
-
 	def process_data(self, data):
 		self.level_length = len(data[0])
 		#iterate through each value in level data file
@@ -587,8 +584,6 @@ class Grenade(pygame.sprite.Sprite):
 					abs(self.rect.centery - enemy.rect.centery) < TILE_SIZE * 2:
 					enemy.health -= 50
 
-
-
 class Explosion(pygame.sprite.Sprite):
 	def __init__(self, x, y, scale):
 		pygame.sprite.Sprite.__init__(self)
@@ -687,7 +682,6 @@ player, health_bar = world.process_data(world_data)
 
 run = True
 while run:
-
 	clock.tick(FPS)
 
 	if start_game == False:
@@ -819,8 +813,6 @@ while run:
 								world_data[x][y] = int(tile)
 					world = World()
 					player, health_bar = world.process_data(world_data)
-
-
 	for event in pygame.event.get():
 		#quit game
 		if event.type == pygame.QUIT:
@@ -840,7 +832,6 @@ while run:
 				jump_fx.play()
 			if event.key == pygame.K_ESCAPE:
 				run = False
-
 
 		#keyboard button released
 		if event.type == pygame.KEYUP:
